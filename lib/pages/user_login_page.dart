@@ -22,6 +22,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
 
   // Şifre görünürlüğü
   bool _obscurePassword = true;
+  bool _obscureCode = true;
 
   // Seçilen değerler
   String? _selectedCity;
@@ -126,6 +127,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                   labelText: 'Şifre',
                   hintText: 'Şifrenizi girin',
                   icon: Icons.lock_outline,
+                  obscureText: _obscurePassword,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Şifre zorunludur.';
@@ -195,6 +197,8 @@ class _UserLoginPageState extends State<UserLoginPage> {
 
                 // İL
                 DropdownButtonFormField<String>(
+                  dropdownColor: Colors.black,
+                  style: TextStyle(color: AppColors.appBarText),
                   value: _selectedCity,
                   decoration: const InputDecoration(
                     labelText: 'İl',
@@ -228,6 +232,8 @@ class _UserLoginPageState extends State<UserLoginPage> {
 
                 // İLÇE
                 DropdownButtonFormField<String>(
+                  dropdownColor: Colors.black,
+                  style: TextStyle(color: AppColors.appBarText),
                   value: _selectedDistrict,
                   decoration: const InputDecoration(
                     labelText: 'İlçe',
@@ -262,6 +268,8 @@ class _UserLoginPageState extends State<UserLoginPage> {
 
                 // SALON
                 DropdownButtonFormField<String>(
+                  style: TextStyle(color: AppColors.appBarText),
+                  dropdownColor: Colors.black,
                   value: _selectedGym,
                   decoration: const InputDecoration(
                     labelText: 'Salon',
@@ -295,6 +303,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                   labelText: 'Kod',
                   hintText: 'Salon kodunuzu girin',
                   icon: Icons.key,
+                  obscureText: _obscureCode,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Salon kodu zorunludur.';
@@ -302,6 +311,18 @@ class _UserLoginPageState extends State<UserLoginPage> {
 
                     return null;
                   },
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureCode = !_obscureCode;
+                      });
+                    },
+                    icon: Icon(
+                      _obscureCode
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 35),

@@ -63,7 +63,7 @@ class AppTextFormField extends StatelessWidget {
 
   final bool obscureText;
   final Widget? suffixIcon;
-  final TextInputAction? textInputAction;
+  final TextInputAction textInputAction;
   final TextInputType? keyboardType;
   final bool enabled;
 
@@ -80,10 +80,10 @@ class AppTextFormField extends StatelessWidget {
     // İsteğe bağlı değerler
     this.obscureText = false,
     this.suffixIcon,
-    this.textInputAction,
     this.keyboardType,
     this.enabled = true,
     this.border = const OutlineInputBorder(),
+    this.textInputAction = TextInputAction.next,
   });
 
   @override

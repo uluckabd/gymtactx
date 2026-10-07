@@ -35,7 +35,7 @@ class AppColors {
 
   static const Color textFieldBackground = Color(0xFFFFFFFF);
 
-  static const Color textFieldText = Color(0xFF000000);
+  static const Color textFieldText = Colors.white;
 
   static const Color textFieldHint = Color(0xFF757575);
 
@@ -54,7 +54,7 @@ class AppColors {
   // ==================================================
 
   static const Color dropdownBackground = Color(0xFFFFFFFF);
-  static const Color dropdownText = Color(0xFF000000);
+  static const Color dropdownText = Colors.white;
   static const Color dropdownIcon = Color(0xFF616161);
   static const Color dropdownBorder = Color(0xFFBDBDBD);
 
