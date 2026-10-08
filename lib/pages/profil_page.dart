@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:gymtactx/constants/app_color.dart';
+import 'package:gymtactx/constants/app_texts.dart';
 import 'package:gymtactx/widgets.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // BÜYÜK PROFİL CARD
+              // ÜST PROFİL KARTI
               SizedBox(
                 width: double.infinity,
                 height: 180,
                 child: Card(
                   margin: EdgeInsets.zero,
-                  color: Colors.black,
                   elevation: 0,
+                  color: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: const BorderSide(color: Colors.grey, width: 1),
@@ -50,7 +55,6 @@ class ProfilePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // KULLANICI ADI
                               const Text(
                                 '@kullaniciadi',
                                 style: TextStyle(
@@ -62,7 +66,6 @@ class ProfilePage extends StatelessWidget {
 
                               const SizedBox(height: 6),
 
-                              // AD SOYAD
                               const Text(
                                 'Ad Soyad',
                                 style: TextStyle(
@@ -73,11 +76,8 @@ class ProfilePage extends StatelessWidget {
 
                               const SizedBox(height: 16),
 
-                              // DÜZENLE BUTONU
                               ElevatedButton(
-                                onPressed: () {
-                                  // Profil düzenleme
-                                },
+                                onPressed: () {},
                                 child: const Text('Düzenle'),
                               ),
                             ],
@@ -91,72 +91,67 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // ALT CARDLAR
+              // 6 ALT KART
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     const double spacing = 12;
 
-                    // 3 sıra arasındaki 2 boşluğu çıkarıp
-                    // kalan yüksekliği tam 3'e bölüyoruz.
-                    final double cardHeight =
-                        (constraints.maxHeight - (spacing * 2)) / 3;
-
+                    // 2 sütun olduğu için kart genişliği
                     final double cardWidth =
                         (constraints.maxWidth - spacing) / 2;
+
+                    // 3 sıra olduğu için kart yüksekliği
+                    // İki adet 12px sıra boşluğunu çıkarıyoruz
+                    final double cardHeight =
+                        (constraints.maxHeight - (spacing * 2)) / 3;
 
                     return GridView.count(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
 
                       crossAxisCount: 2,
-
                       crossAxisSpacing: spacing,
                       mainAxisSpacing: spacing,
 
+                      // Kalan alanı tam doldur
                       childAspectRatio: cardWidth / cardHeight,
 
                       children: [
                         AppCard(
-                          title: 'Antrenmanlarım',
-                          icon: Icons.fitness_center,
+                          title: AppTexts.myWorkout,
+                          imagePath: 'assets/images/cards/antremanim.png',
                           onTap: () {},
-                          color: AppColors.workout,
                         ),
 
                         AppCard(
-                          title: 'Programım',
-                          icon: Icons.calendar_month_outlined,
+                          title: AppTexts.myProgram,
+                          imagePath: 'assets/images/cards/basarilarim.png',
                           onTap: () {},
-                          color: AppColors.program,
                         ),
 
                         AppCard(
-                          title: 'Ölçümlerim',
-                          icon: Icons.monitor_weight_outlined,
+                          title: AppTexts.myMeasurements,
+                          imagePath: 'assets/images/cards/olculerim.png',
                           onTap: () {},
-                          color: AppColors.measurement,
                         ),
 
                         AppCard(
-                          title: 'İstatistikler',
-                          icon: Icons.bar_chart,
+                          title: AppTexts.myStatics,
+                          imagePath: '',
                           onTap: () {},
-                          color: AppColors.statistics,
                         ),
 
                         AppCard(
-                          title: 'Salonum',
-                          icon: Icons.apartment,
+                          title: AppTexts.myGym,
+                          imagePath: 'assets/images/cards/salonum.png',
                           onTap: () {},
-                          color: AppColors.gym,
                         ),
 
                         AppCard(
-                          title: 'cartcurt',
-                          icon: Icons.apartment,
+                          title: AppTexts.myDiet,
+                          imagePath: 'assets/images/cards/beslenmem.png',
                           onTap: () {},
-                          color: AppColors.appBarIcon,
                         ),
                       ],
                     );

@@ -96,7 +96,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                 // KİŞİSEL BİLGİLER
                 // =====================================
                 const Text(
-                  AppTexts.personal_Information,
+                  AppTexts.personalInformation,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -185,7 +185,7 @@ class _UserLoginPageState extends State<UserLoginPage> {
                 // SALON BİLGİLERİ
                 // =====================================
                 const Text(
-                  AppTexts.gym_Information,
+                  AppTexts.gymInformation,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

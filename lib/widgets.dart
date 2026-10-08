@@ -175,17 +175,10 @@ class AppTextFormField extends StatelessWidget {
 
 class AppCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String? imagePath;
   final VoidCallback? onTap;
-  final Color? color;
 
-  const AppCard({
-    super.key,
-    required this.title,
-    required this.icon,
-    this.onTap,
-    required this.color,
-  });
+  const AppCard({super.key, required this.title, this.imagePath, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -195,29 +188,44 @@ class AppCard extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 0,
-        color: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: Colors.grey, width: 1),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 32, color: Colors.white),
-              const SizedBox(height: 10),
-              Text(
+        clipBehavior: Clip.antiAlias,
+        color: Colors.grey.shade900,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // FOTOĞRAF
+            if (imagePath != null && imagePath!.isNotEmpty)
+              Image.asset(imagePath!, fit: BoxFit.cover),
+
+            // Fotoğraf varsa yazının okunması için hafif gölge
+            if (imagePath != null && imagePath!.isNotEmpty)
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black54],
+                  ),
+                ),
+              ),
+
+            // BAŞLIK - SAĞ ALT
+            Positioned(
+              right: 12,
+              bottom: 10,
+              left: 12,
+              child: Text(
                 title,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.right,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

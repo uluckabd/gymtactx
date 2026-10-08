@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gymtactx/pages/deneme.dart';
+import 'package:gymtactx/pages/login_page.dart';
 import 'package:gymtactx/pages/profil_page.dart';
 import 'package:gymtactx/pages/user_login_page.dart';
 
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const ProfilePage(),
+      home: ProfilePage(),
     );
   }
 }
