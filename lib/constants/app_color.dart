@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  AppColors._();
+  const AppColors._();
+  static const Color workout = Color.fromARGB(212, 120, 204, 246);
+
+  static const program = Color(0xFFFF9800);
+
+  static const measurement = Color(0xFF4CAF50);
+
+  static const statistics = Color(0xFF9C27B0);
+
+  static const gym = Color(0xFFF44336);
+
+  static const settings = Color(0xFF607D8B);
 
   // ==================================================
   // ANA UYGULAMA RENKLERİ
