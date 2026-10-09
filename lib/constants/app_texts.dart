@@ -13,11 +13,17 @@ class AppTexts {
   static const String cancel = 'İptal';
   static const String logout = 'Çıkış Yap';
 
-  //card info
+  //profil card texts
   static const String myWorkout = 'Programım';
-  static const String myProgram = 'Başarılarım';
-  static const String myMeasurements = "ölçülerim";
+  static const String myAchievements = 'Başarılarım';
+  static const String myMeasurements = "Değişim";
   static const String myGym = "Salonum";
-  static const String myStatics = "İstatistiklerim";
+  static const String mycalori = "Aktivitem";
   static const String myDiet = "Beslenmem";
+
+  //profil users text
+  static const String myNickname = '@kullaniciadi';
+  static const String myNameSurname = 'İsim Soyisim';
+  static const String mygym = 'Salonum';
+  static const String myPoint = 'Puanım';
 }

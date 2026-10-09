@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(13),
           child: Column(
             children: [
               // ÜST PROFİL KARTI
@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Card(
                   margin: EdgeInsets.zero,
                   elevation: 0,
-                  color: Colors.black,
+                  color: AppColors.background,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: const BorderSide(color: Colors.grey, width: 1),
@@ -52,34 +52,20 @@ class _ProfilePageState extends State<ProfilePage> {
                         // KULLANICI BİLGİLERİ
                         Expanded(
                           child: Column(
+                            spacing: 10,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                '@kullaniciadi',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Text(
+                                AppTexts.myNickname,
+                                style: AppTextStyles.title,
                               ),
-
-                              const SizedBox(height: 6),
-
-                              const Text(
-                                'Ad Soyad',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
+                              Text(
+                                AppTexts.myNameSurname,
+                                style: AppTextStyles.subtitle,
                               ),
-
-                              const SizedBox(height: 16),
-
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text('Düzenle'),
-                              ),
+                              Text(AppTexts.myGym, style: AppTextStyles.body),
+                              Text(AppTexts.myPoint, style: AppTextStyles.body),
                             ],
                           ),
                         ),
@@ -120,37 +106,37 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         AppCard(
                           title: AppTexts.myWorkout,
-                          imagePath: 'assets/images/cards/antremanim.png',
+                          imagePath: 'myWorkout',
                           onTap: () {},
                         ),
 
                         AppCard(
-                          title: AppTexts.myProgram,
-                          imagePath: 'assets/images/cards/basarilarim.png',
+                          title: AppTexts.myAchievements,
+                          imagePath: 'myAchievements',
                           onTap: () {},
                         ),
 
                         AppCard(
                           title: AppTexts.myMeasurements,
-                          imagePath: 'assets/images/cards/olculerim.png',
+                          imagePath: 'myMeasurements',
                           onTap: () {},
                         ),
 
                         AppCard(
-                          title: AppTexts.myStatics,
-                          imagePath: '',
+                          title: AppTexts.mycalori,
+                          imagePath: 'mycalori',
                           onTap: () {},
                         ),
 
                         AppCard(
                           title: AppTexts.myGym,
-                          imagePath: 'assets/images/cards/salonum.png',
+                          imagePath: 'myGym',
                           onTap: () {},
                         ),
 
                         AppCard(
                           title: AppTexts.myDiet,
-                          imagePath: 'assets/images/cards/beslenmem.png',
+                          imagePath: 'myDiet',
                           onTap: () {},
                         ),
                       ],

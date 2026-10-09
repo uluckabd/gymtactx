@@ -196,7 +196,10 @@ class AppCard extends StatelessWidget {
           children: [
             // FOTOĞRAF
             if (imagePath != null && imagePath!.isNotEmpty)
-              Image.asset(imagePath!, fit: BoxFit.cover),
+              Image.asset(
+                'assets/images/cards/$imagePath.png',
+                fit: BoxFit.cover,
+              ),
 
             // Fotoğraf varsa yazının okunması için hafif gölge
             if (imagePath != null && imagePath!.isNotEmpty)
@@ -230,4 +233,29 @@ class AppCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class AppTextStyles {
+  AppTextStyles._();
+
+  // SAYFA BAŞLIĞI
+  static const TextStyle title = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  // ALT BAŞLIK
+  static const TextStyle subtitle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+
+  // NORMAL YAZI
+  static const TextStyle body = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: Colors.white70,
+  );
 }
