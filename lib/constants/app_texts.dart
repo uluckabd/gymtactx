@@ -26,4 +26,11 @@ class AppTexts {
   static const String myNameSurname = 'İsim Soyisim';
   static const String mygym = 'Salonum';
   static const String myPoint = 'Puanım';
+
+  // training
+  static const String trainingTitle = 'Antremanım';
+  static const String trainingTime = 'Antreman süresi';
+  static const String trainingCalori = 'Yakılan kalori';
+  static const String trainingStart = 'Antremanı başlat';
+  static const String calorieCounting = 'kalori';
 }

@@ -110,4 +110,9 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color transparent = Colors.transparent;
+
+  //-------------------------------------------------------
+
+  static const Color appBarBackground = Colors.white;
+  static const Color appBarForeground = Colors.black;
 }

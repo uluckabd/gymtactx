@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gymtactx/pages/antreman.dart';
 import 'package:gymtactx/pages/login_page.dart';
 import 'package:gymtactx/pages/profil_page.dart';
+import 'package:gymtactx/pages/training_page.dart';
 import 'package:gymtactx/pages/user_login_page.dart';
 
 void main() {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ProfilePage(),
+      home: TrainingPage(),
     );
   }
 }

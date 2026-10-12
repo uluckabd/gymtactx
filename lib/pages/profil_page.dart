@@ -30,7 +30,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: AppColors.background,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: const BorderSide(color: Colors.grey, width: 1),
+                    side: const BorderSide(
+                      color: AppColors.buttonBackground,
+                      width: 2,
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20),

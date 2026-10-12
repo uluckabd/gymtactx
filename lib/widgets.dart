@@ -185,6 +185,7 @@ class AppCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
+
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 0,
@@ -240,7 +241,7 @@ class AppTextStyles {
 
   // SAYFA BAŞLIĞI
   static const TextStyle title = TextStyle(
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
@@ -258,4 +259,123 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: Colors.white70,
   );
+}
+
+// training card
+class MovementWidget extends StatelessWidget {
+  final String name;
+  final int sets;
+  final int reps;
+  final double kg;
+  final VoidCallback? onVideoTap;
+
+  const MovementWidget({
+    super.key,
+    required this.name,
+    required this.sets,
+    required this.reps,
+    required this.kg,
+    this.onVideoTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const Color accentColor = Color(0xFFEFFF14);
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      color: const Color(0xFF222222),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: Colors.white12, width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            // VİDEO ALANI
+            InkWell(
+              onTap: onVideoTap,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.play_circle_outline,
+                  color: accentColor,
+                  size: 38,
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 14),
+
+            // HAREKET BİLGİLERİ
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.fitness_center,
+                        color: accentColor,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '$sets Set × $reps Tekrar',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.monitor_weight_outlined,
+                        color: accentColor,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${kg.toStringAsFixed(1)} kg',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const Icon(Icons.chevron_right, color: Colors.white54),
+          ],
+        ),
+      ),
+    );
+  }
 }
