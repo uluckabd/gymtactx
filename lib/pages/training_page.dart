@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:gymtactx/constants/app_color.dart';
 
 class TrainingPage extends StatefulWidget {
   const TrainingPage({super.key});
@@ -22,7 +23,7 @@ class Exercise {
 class _WorkoutPageState extends State<TrainingPage> {
   bool workoutStarted = false;
   bool workoutPaused = false;
-  static const yellow = Color(0xFFEFFF14);
+
   static const surface = Color(0xFF222222);
   final exercises = <Exercise>[
     Exercise('Bench Press', 12, 40, 90, 4),
@@ -110,7 +111,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                     child: Icon(
                       Icons.play_circle_outline,
                       size: 64,
-                      color: yellow,
+                      color: AppColors.buttonBackground,
                     ),
                   ),
                 ),
@@ -145,7 +146,10 @@ class _WorkoutPageState extends State<TrainingPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Kapat', style: TextStyle(color: yellow)),
+            child: const Text(
+              'Kapat',
+              style: TextStyle(color: AppColors.buttonBackground),
+            ),
           ),
         ],
       ),
@@ -166,7 +170,10 @@ class _WorkoutPageState extends State<TrainingPage> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.calendar_month, color: yellow),
+            icon: const Icon(
+              Icons.calendar_month,
+              color: AppColors.buttonBackground,
+            ),
           ),
         ],
       ),
@@ -191,7 +198,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Antrenmanı Başlat'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: yellow,
+                      backgroundColor: AppColors.buttonBackground,
                       foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
@@ -205,7 +212,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                       children: [
                         const Icon(
                           Icons.local_fire_department,
-                          color: yellow,
+                          color: AppColors.buttonBackground,
                           size: 34,
                         ),
                         const SizedBox(width: 8),
@@ -225,7 +232,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                               Text(
                                 '0 kcal',
                                 style: TextStyle(
-                                  color: yellow,
+                                  color: AppColors.buttonBackground,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -265,7 +272,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                       value: 0,
                       minHeight: 7,
                       backgroundColor: Colors.white24,
-                      color: yellow,
+                      color: AppColors.buttonBackground,
                       borderRadius: BorderRadius.circular(8),
                     ),
 
@@ -308,7 +315,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                             icon: const Icon(Icons.check),
                             label: const Text('Antrenmanı Bitir'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: yellow,
+                              backgroundColor: AppColors.buttonBackground,
                               foregroundColor: Colors.black,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -335,7 +342,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                 const Text(
                   'GÖĞÜS TRICEPS',
                   style: TextStyle(
-                    color: yellow,
+                    color: AppColors.buttonBackground,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -364,7 +371,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                     ),
                     Text(
                       '$doneSets/$totalSets',
-                      style: const TextStyle(color: yellow),
+                      style: const TextStyle(color: AppColors.buttonBackground),
                     ),
                   ],
                 ),
@@ -372,7 +379,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                 LinearProgressIndicator(
                   value: progress,
                   minHeight: 8,
-                  color: yellow,
+                  color: AppColors.buttonBackground,
                   backgroundColor: Colors.white24,
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -380,9 +387,6 @@ class _WorkoutPageState extends State<TrainingPage> {
             ),
           ),
           const SizedBox(height: 16),
-
-          const SizedBox(height: 16),
-
           const Text(
             'Hareketlerim',
             style: TextStyle(
@@ -401,7 +405,9 @@ class _WorkoutPageState extends State<TrainingPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
                 side: BorderSide(
-                  color: e.completed == e.sets.length ? yellow : Colors.white12,
+                  color: e.completed == e.sets.length
+                      ? AppColors.buttonBackground
+                      : Colors.white12,
                 ),
               ),
               child: Padding(
@@ -424,7 +430,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                               ),
                               child: const Icon(
                                 Icons.play_circle_outline,
-                                color: yellow,
+                                color: AppColors.buttonBackground,
                                 size: 36,
                               ),
                             ),
@@ -453,7 +459,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                                 Text(
                                   '${e.completed}/${e.sets.length} set tamamlandı',
                                   style: const TextStyle(
-                                    color: yellow,
+                                    color: AppColors.buttonBackground,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -472,7 +478,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                       Row(
                         children: [
                           const Text(
-                            'Ağırlık (kg)',
+                            'Tavsiye edilen ağırlık',
                             style: TextStyle(color: Colors.white70),
                           ),
                           const SizedBox(width: 12),
@@ -500,7 +506,7 @@ class _WorkoutPageState extends State<TrainingPage> {
                               ),
                               selected: checked,
                               onSelected: (_) => toggleSet(index, setIndex),
-                              selectedColor: yellow,
+                              selectedColor: AppColors.buttonBackground,
                               backgroundColor: const Color(0xFF363636),
                               labelStyle: TextStyle(
                                 color: checked ? Colors.black : Colors.white,
