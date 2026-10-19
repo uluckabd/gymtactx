@@ -4,6 +4,7 @@ import 'package:gymtactx/pages/login_page.dart';
 import 'package:gymtactx/pages/myAchievements.dart';
 import 'package:gymtactx/pages/myGym.dart';
 import 'package:gymtactx/pages/myMeasurements.dart';
+import 'package:gymtactx/pages/myNutrition.dart';
 import 'package:gymtactx/pages/myProgram.dart';
 import 'package:gymtactx/pages/profil_page.dart';
 import 'package:gymtactx/pages/training_page.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: MyAchievementsPage(),
+      home: Mynutrition(),
     );
   }
 }
