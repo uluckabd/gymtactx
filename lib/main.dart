@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymtactx/pages/antreman.dart';
 import 'package:gymtactx/pages/login_page.dart';
 import 'package:gymtactx/pages/myAchievements.dart';
+import 'package:gymtactx/pages/myCalendar.dart';
 import 'package:gymtactx/pages/myGym.dart';
 import 'package:gymtactx/pages/myMeasurements.dart';
 import 'package:gymtactx/pages/myNutrition.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Mynutrition(),
+      home: Mycalendar(),
     );
   }
 }
