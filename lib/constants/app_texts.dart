@@ -33,4 +33,7 @@ class AppTexts {
   static const String trainingCalori = 'Yakılan kalori';
   static const String trainingStart = 'Antremanı başlat';
   static const String calorieCounting = 'kalori';
+
+  //myGym
+  static const String myGymName = 'Salonum';
 }

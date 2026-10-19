@@ -1,546 +1,504 @@
 import 'package:flutter/material.dart';
-import 'package:gymtactx/constants/app_color.dart';
 
-// Sample data. Replace these values with your gym's actual data later.
+/* ===================== TASARIM SABİTLERİ ===================== */
+
+class AppColors {
+  static const background = Color(0xFF000000);
+  static const card = Color(0xFF1E1E1E);
+  static const border = Color(0xFF333333);
+  static const primary = Color(0xFFE5FF00);
+  static const primaryFaded = Color(0x33E5FF00);
+  static const text = Color(0xFFFFFFFF);
+  static const textSecondary = Color(0xFF9E9E9E);
+}
+
+class AppSizes {
+  // boşluklar
+  static const pagePadding = 16.0;
+  static const cardPadding = 16.0;
+  static const gapXS = 4.0;
+  static const gapS = 8.0;
+  static const gapM = 12.0;
+  static const gapL = 16.0;
+  static const gapXL = 24.0;
+
+  // şekiller
+  static const radius = 16.0;
+  static const radiusS = 12.0;
+  static const radiusFull = 20.0;
+  static const borderWidth = 1.0;
+
+  // ikonlar
+  static const iconS = 16.0;
+  static const icon = 20.0;
+  static const iconL = 32.0;
+
+  // diğer
+  static const avatar = 56.0;
+  static const progressHeight = 8.0;
+  static const buttonHeight = 48.0;
+  static const chipPaddingH = 12.0;
+  static const chipPaddingV = 8.0;
+}
+
+class AppStyles {
+  static const heading = TextStyle(
+    color: AppColors.text,
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+  static const title = TextStyle(
+    color: AppColors.text,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+  static const body = TextStyle(color: AppColors.text, fontSize: 14);
+  static const caption = TextStyle(
+    color: AppColors.textSecondary,
+    fontSize: 12,
+  );
+  static const accent = TextStyle(color: AppColors.primary, fontSize: 12);
+  static const price = TextStyle(
+    color: AppColors.primary,
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+  static const display = TextStyle(
+    color: AppColors.primary,
+    fontSize: 36,
+    fontWeight: FontWeight.bold,
+  );
+  static const value = TextStyle(
+    color: AppColors.text,
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+  );
+}
+
+class AppFormat {
+  static String date(DateTime d) =>
+      '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
+
+  static String price(int value) =>
+      '₺${value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => '.')}';
+}
+
+/* ===================== MODELLER (API'DEN DOLACAK) ===================== */
+
 class GymInfo {
   final String name;
-  final String location;
+  final String address;
   final String phone;
-  final String openingHours;
-  final int memberCount;
-  final DateTime membershipStart;
-  final DateTime membershipEnd;
-  final String membershipPlan;
+  final String hours;
 
   const GymInfo({
     required this.name,
-    required this.location,
+    required this.address,
     required this.phone,
-    required this.openingHours,
-    required this.memberCount,
-    required this.membershipStart,
-    required this.membershipEnd,
-    required this.membershipPlan,
+    required this.hours,
   });
 }
 
-class GymPackage {
+class Membership {
   final String name;
-  final String duration;
-  final String price;
-  final String description;
-  final bool highlighted;
+  final DateTime startDate;
+  final DateTime endDate;
+  final bool isActive;
 
-  const GymPackage({
+  const Membership({
     required this.name,
-    required this.duration,
+    required this.startDate,
+    required this.endDate,
+    required this.isActive,
+  });
+
+  int get remainingDays => endDate.difference(DateTime.now()).inDays;
+
+  double get progress {
+    final total = endDate.difference(startDate).inDays;
+    final passed = DateTime.now().difference(startDate).inDays;
+    return (passed / total).clamp(0.0, 1.0);
+  }
+}
+
+class GymStats {
+  final int totalMembers;
+  final int trainerCount;
+
+  const GymStats({required this.totalMembers, required this.trainerCount});
+}
+
+class MembershipPackage {
+  final String name;
+  final String subtitle;
+  final int price;
+  final bool isFeatured;
+
+  const MembershipPackage({
+    required this.name,
+    required this.subtitle,
     required this.price,
-    required this.description,
-    this.highlighted = false,
+    this.isFeatured = false,
   });
 }
 
-class GymTrainer {
+class Trainer {
   final String name;
-  final String specialty;
-  final String experience;
-  final IconData icon;
+  final String field;
+  final int experienceYears;
 
-  const GymTrainer({
+  const Trainer({
     required this.name,
-    required this.specialty,
-    required this.experience,
-    this.icon = Icons.person_outline,
+    required this.field,
+    required this.experienceYears,
   });
 }
 
-class GymAnnouncement {
-  final String title;
-  final String description;
-  final String date;
+class Amenity {
+  final IconData icon;
+  final String label;
 
-  const GymAnnouncement({
-    required this.title,
-    required this.description,
-    required this.date,
-  });
+  const Amenity({required this.icon, required this.label});
 }
 
-class MyGymPage extends StatelessWidget {
-  const MyGymPage({super.key});
+/* ===================== SAHTE VERİ ===================== */
 
-  static const Color _background = Colors.black;
-  static const Color _surface = Color(0xFF202020);
-  static const Color _yellow = AppColors.buttonBackColor;
-
-  static final GymInfo _gym = GymInfo(
+class MockData {
+  static const gym = GymInfo(
     name: 'GYMTACTX FITNESS CLUB',
-    location: 'Merkez Şube · Konum bilgisi',
+    address: 'Merkez Şube · Konum bilgisi',
     phone: '+90 5XX XXX XX XX',
-    openingHours: 'Hafta içi 07.00–23.00',
-    memberCount: 1248,
-    membershipStart: DateTime(2026, 9, 1),
-    membershipEnd: DateTime(2027, 3, 1),
-    membershipPlan: '6 Aylık Premium',
+    hours: '15.00-24.00',
   );
 
-  static const List<GymPackage> _packages = [
-    GymPackage(
+  static final membership = Membership(
+    name: '6 Aylık Premium',
+    startDate: DateTime(2026, 9, 1),
+    endDate: DateTime(2027, 3, 1),
+    isActive: true,
+  );
+
+  static const stats = GymStats(totalMembers: 1248, trainerCount: 3);
+
+  static const packages = [
+    MembershipPackage(
       name: 'Standart',
-      duration: '1 Ay',
-      price: '₺1.200',
-      description: 'Fitness alanına erişim',
+      subtitle: '1 Ay · Fitness alanına erişim',
+      price: 1200,
     ),
-    GymPackage(
+    MembershipPackage(
       name: 'Avantaj',
-      duration: '3 Ay',
-      price: '₺3.000',
-      description: 'Fitness + grup dersleri',
-      highlighted: true,
+      subtitle: '3 Ay · Fitness + grup dersleri',
+      price: 3000,
+      isFeatured: true,
     ),
-    GymPackage(
+    MembershipPackage(
       name: 'Premium',
-      duration: '12 Ay',
-      price: '₺9.600',
-      description: 'Tüm alanlar + özel avantajlar',
+      subtitle: '12 Ay · Tüm alanlar + özel avantajlar',
+      price: 9600,
     ),
   ];
 
-  static const List<GymTrainer> _trainers = [
-    GymTrainer(
+  static const trainers = [
+    Trainer(
       name: 'Mert Yılmaz',
-      specialty: 'Kuvvet ve kondisyon',
-      experience: '6 yıl deneyim',
+      field: 'Kuvvet ve kondisyon',
+      experienceYears: 6,
     ),
-    GymTrainer(
+    Trainer(
       name: 'Ece Demir',
-      specialty: 'Fonksiyonel antrenman',
-      experience: '5 yıl deneyim',
+      field: 'Fonksiyonel antrenman',
+      experienceYears: 5,
     ),
-    GymTrainer(
-      name: 'Can Arslan',
-      specialty: 'Vücut geliştirme',
-      experience: '8 yıl deneyim',
-    ),
+    Trainer(name: 'Can Arslan', field: 'Vücut geliştirme', experienceYears: 8),
   ];
 
-  static const List<(IconData, String)> _amenities = [
-    (Icons.shower_outlined, 'Duş'),
-    (Icons.wifi, 'Wi-Fi'),
-    (Icons.lock_outline, 'Dolap'),
-    (Icons.local_parking_outlined, 'Otopark'),
-    (Icons.groups_outlined, 'Grup dersleri'),
-    (Icons.fitness_center, 'Serbest ağırlık'),
+  static const amenities = [
+    Amenity(icon: Icons.shower_outlined, label: 'Duş'),
+    Amenity(icon: Icons.wifi, label: 'Wi-Fi'),
+    Amenity(icon: Icons.lock_outline, label: 'Dolap'),
+    Amenity(icon: Icons.local_parking, label: 'Otopark'),
+    Amenity(icon: Icons.groups_outlined, label: 'Grup dersleri'),
+    Amenity(icon: Icons.fitness_center, label: 'Serbest ağırlık'),
   ];
+}
 
-  static const List<GymAnnouncement> _announcements = [
-    GymAnnouncement(
-      title: 'Yeni grup dersleri',
-      description: 'Güncel ders programını resepsiyondan öğrenebilirsiniz.',
-      date: '12 Ekim',
-    ),
-    GymAnnouncement(
-      title: 'Hafta sonu çalışma saatleri',
-      description: 'Cumartesi ve pazar: 09.00–21.00.',
-      date: '8 Ekim',
-    ),
-  ];
+/* ===================== ORTAK WIDGETLAR ===================== */
+
+class AppIcon extends StatelessWidget {
+  final IconData icon;
+  final double size;
+  final Color color;
+
+  const AppIcon(
+    this.icon, {
+    super.key,
+    this.size = AppSizes.icon,
+    this.color = AppColors.primary,
+  });
+
+  @override
+  Widget build(BuildContext context) => Icon(icon, size: size, color: color);
+}
+
+class AppText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final TextAlign? align;
+
+  const AppText.heading(this.text, {super.key, this.align})
+    : style = AppStyles.heading;
+  const AppText.title(this.text, {super.key, this.align})
+    : style = AppStyles.title;
+  const AppText.body(this.text, {super.key, this.align})
+    : style = AppStyles.body;
+  const AppText.caption(this.text, {super.key, this.align})
+    : style = AppStyles.caption;
+  const AppText.accent(this.text, {super.key, this.align})
+    : style = AppStyles.accent;
+  const AppText.price(this.text, {super.key, this.align})
+    : style = AppStyles.price;
+  const AppText.display(this.text, {super.key, this.align})
+    : style = AppStyles.display;
+  const AppText.value(this.text, {super.key, this.align})
+    : style = AppStyles.value;
+
+  @override
+  Widget build(BuildContext context) =>
+      Text(text, style: style, textAlign: align);
+}
+
+class AppCard extends StatelessWidget {
+  final Widget child;
+  final Color color;
+  final Color borderColor;
+  final VoidCallback? onTap;
+
+  const AppCard({
+    super.key,
+    required this.child,
+    this.color = AppColors.card,
+    this.borderColor = AppColors.border,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _background,
-      appBar: AppBar(
-        title: const Text(
-          'Salonum',
-          style: TextStyle(fontWeight: FontWeight.bold),
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppSizes.radius),
+      side: BorderSide(color: borderColor, width: AppSizes.borderWidth),
+    );
+    return Material(
+      color: color,
+      shape: shape,
+      child: InkWell(
+        customBorder: shape,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSizes.cardPadding),
+          child: SizedBox(width: double.infinity, child: child),
         ),
-        centerTitle: false,
-        backgroundColor: _background,
-        foregroundColor: Colors.white,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-        children: [
-          GymHeroCard(gym: _gym),
-          const SizedBox(height: 20),
-          const GymSectionTitle(
-            title: 'Üyeliğim',
-            icon: Icons.workspace_premium_outlined,
-          ),
-          const SizedBox(height: 10),
-          GymMembershipCard(gym: _gym),
-          const SizedBox(height: 22),
-          const GymSectionTitle(
-            title: 'Salon istatistikleri',
-            icon: Icons.bar_chart_outlined,
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: GymStatCard(
-                  icon: Icons.people_alt_outlined,
-                  value: '${_gym.memberCount}',
-                  label: 'Toplam üye',
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: GymStatCard(
-                  icon: Icons.sports_gymnastics,
-                  value: '${_trainers.length}',
-                  label: 'Antrenör',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 22),
-          const GymSectionTitle(
-            title: 'Üyelik paketleri',
-            icon: Icons.sell_outlined,
-          ),
-          const SizedBox(height: 10),
-          ..._packages.map(
-            (package) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: GymPackageCard(package: package),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const GymSectionTitle(
-            title: 'Antrenörlerimiz',
-            icon: Icons.badge_outlined,
-          ),
-          const SizedBox(height: 10),
-          ..._trainers.map(
-            (trainer) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: GymTrainerCard(trainer: trainer),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const GymSectionTitle(
-            title: 'Salon olanakları',
-            icon: Icons.grid_view_outlined,
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _amenities
-                .map(
-                  (amenity) =>
-                      GymAmenityChip(icon: amenity.$1, label: amenity.$2),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 22),
-          const GymSectionTitle(
-            title: 'Duyurular',
-            icon: Icons.campaign_outlined,
-          ),
-          const SizedBox(height: 10),
-          ..._announcements.map(
-            (announcement) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: GymAnnouncementCard(announcement: announcement),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const GymSectionTitle(
-            title: 'İletişim ve çalışma saatleri',
-            icon: Icons.info_outline,
-          ),
-          const SizedBox(height: 10),
-          GymContactCard(gym: _gym),
-        ],
       ),
     );
   }
 }
 
-class GymSectionTitle extends StatelessWidget {
-  final String title;
+class SectionTitle extends StatelessWidget {
   final IconData icon;
-  const GymSectionTitle({super.key, required this.title, required this.icon});
+  final String title;
+
+  const SectionTitle({super.key, required this.icon, required this.title});
 
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Icon(icon, color: AppColors.buttonBackColor, size: 21),
-      const SizedBox(width: 8),
-      Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      AppIcon(icon),
+      const SizedBox(width: AppSizes.gapS),
+      AppText.title(title),
     ],
   );
 }
 
-class GymPanel extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final Color? borderColor;
-  const GymPanel({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-    this.borderColor,
-  });
+class InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const InfoRow({super.key, required this.icon, required this.text});
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: padding,
-    decoration: BoxDecoration(
-      color: const Color(0xFF202020),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: borderColor ?? Colors.white12),
-    ),
-    child: child,
+  Widget build(BuildContext context) => Row(
+    children: [
+      AppIcon(icon, size: AppSizes.iconS),
+      const SizedBox(width: AppSizes.gapS),
+      AppText.body(text),
+    ],
   );
 }
 
-class GymHeroCard extends StatelessWidget {
-  final GymInfo gym;
-  const GymHeroCard({super.key, required this.gym});
+class AppBadge extends StatelessWidget {
+  final String text;
+
+  const AppBadge(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 180,
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(18),
-      gradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF343434), Color(0xFF111111)],
-      ),
-      border: Border.all(color: Colors.white24),
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSizes.chipPaddingH,
+      vertical: AppSizes.gapXS,
     ),
+    decoration: BoxDecoration(
+      color: AppColors.primaryFaded,
+      borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+    ),
+    child: AppText.accent(text),
+  );
+}
+
+class AppOutlinedButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+
+  const AppOutlinedButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: double.infinity,
+    height: AppSizes.buttonHeight,
+    child: OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: const AppIcon(Icons.ac_unit, size: AppSizes.icon),
+      label: Text(label, style: AppStyles.accent.copyWith(fontSize: 14)),
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: AppColors.primary),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radius),
+        ),
+      ),
+    ),
+  );
+}
+
+/* ===================== BÖLÜM WIDGETLARI ===================== */
+
+class GymHeaderCard extends StatelessWidget {
+  final GymInfo gym;
+
+  const GymHeaderCard({super.key, required this.gym});
+
+  @override
+  Widget build(BuildContext context) => AppCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Align(
-          alignment: Alignment.topRight,
-          child: Icon(
-            Icons.fitness_center,
-            size: 48,
-            color: AppColors.buttonBackColor,
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            const Text(
-              'SPOR SALONUM',
-              style: TextStyle(
-                color: AppColors.buttonBackColor,
-                fontSize: 11,
-                letterSpacing: 2,
-                fontWeight: FontWeight.w700,
+            Expanded(child: AppText.heading(gym.name)),
+            const AppIcon(Icons.fitness_center, size: AppSizes.iconL),
+          ],
+        ),
+        const SizedBox(height: AppSizes.gapM),
+        InfoRow(icon: Icons.location_on_outlined, text: gym.address),
+        const SizedBox(height: AppSizes.gapS),
+        InfoRow(icon: Icons.phone_outlined, text: gym.phone),
+        const SizedBox(height: AppSizes.gapS),
+        InfoRow(icon: Icons.access_time, text: gym.hours),
+      ],
+    ),
+  );
+}
+
+class _DateColumn extends StatelessWidget {
+  final String label;
+  final DateTime date;
+
+  const _DateColumn({required this.label, required this.date});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      AppText.caption(label),
+      const SizedBox(height: AppSizes.gapXS),
+      AppText.body(AppFormat.date(date)),
+    ],
+  );
+}
+
+class MembershipCard extends StatelessWidget {
+  final Membership membership;
+
+  const MembershipCard({super.key, required this.membership});
+
+  @override
+  Widget build(BuildContext context) => AppCard(
+    borderColor: AppColors.primaryFaded,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AppText.title(membership.name),
+            AppBadge(membership.isActive ? 'Aktif' : 'Pasif'),
+          ],
+        ),
+        const SizedBox(height: AppSizes.gapM),
+        Row(
+          children: [
+            Expanded(
+              child: _DateColumn(
+                label: 'Başlangıç',
+                date: membership.startDate,
               ),
             ),
-            const SizedBox(height: 5),
-            Text(
-              gym.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  size: 15,
-                  color: Colors.white70,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    gym.location,
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                ),
-              ],
+            Expanded(
+              child: _DateColumn(label: 'Bitiş', date: membership.endDate),
             ),
           ],
+        ),
+        const SizedBox(height: AppSizes.gapM),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            AppText.display('${membership.remainingDays}'),
+            const SizedBox(width: AppSizes.gapS),
+            const AppText.caption('gün kaldı'),
+          ],
+        ),
+        const SizedBox(height: AppSizes.gapS),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+          child: LinearProgressIndicator(
+            value: membership.progress,
+            minHeight: AppSizes.progressHeight,
+            color: AppColors.primary,
+            backgroundColor: AppColors.border,
+          ),
+        ),
+        const SizedBox(height: AppSizes.gapL),
+        AppOutlinedButton(
+          icon: Icons.ac_unit,
+          label: 'Üyeliği Dondur',
+          onPressed: () {},
         ),
       ],
     ),
   );
 }
 
-class GymMembershipCard extends StatelessWidget {
-  final GymInfo gym;
-  const GymMembershipCard({super.key, required this.gym});
-
-  @override
-  Widget build(BuildContext context) {
-    final today = DateTime.now();
-    final start = DateUtils.dateOnly(gym.membershipStart);
-    final end = DateUtils.dateOnly(gym.membershipEnd);
-    final current = DateUtils.dateOnly(today);
-    final totalDays = end.difference(start).inDays;
-    final elapsedDays = current.difference(start).inDays;
-    final remainingDays = end.difference(current).inDays.clamp(0, 999999);
-    final progress = totalDays > 0
-        ? (elapsedDays / totalDays).clamp(0.0, 1.0)
-        : 0.0;
-    final status = current.isBefore(start)
-        ? 'Henüz başlamadı'
-        : current.isAfter(end)
-        ? 'Süresi doldu'
-        : 'Aktif';
-
-    return GymPanel(
-      borderColor: AppColors.buttonBackColor.withValues(alpha: 0.45),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  gym.membershipPlan,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.buttonBackColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  status,
-                  style: const TextStyle(
-                    color: AppColors.buttonBackColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: _MembershipDate(label: 'Başlangıç', date: start),
-              ),
-              Expanded(
-                child: _MembershipDate(label: 'Bitiş', date: end),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '$remainingDays',
-                style: const TextStyle(
-                  color: AppColors.buttonBackColor,
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 6, bottom: 7),
-                child: Text(
-                  'gün kaldı',
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 7,
-            borderRadius: BorderRadius.circular(10),
-            backgroundColor: Colors.white12,
-            color: AppColors.buttonBackColor,
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Üyelik süresi ilerlemesi',
-            style: TextStyle(color: Colors.white54, fontSize: 11),
-          ),
-          const SizedBox(height: 16),
-
-          const Divider(color: Colors.white24, height: 1),
-
-          const SizedBox(height: 12),
-
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () {
-                // Üyelik dondurma işlemi daha sonra eklenecek.
-              },
-              icon: const Icon(Icons.ac_unit, size: 20),
-              label: const Text('Üyeliği Dondur'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.buttonBackColor,
-                side: const BorderSide(color: AppColors.buttonBackColor),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MembershipDate extends StatelessWidget {
-  final String label;
-  final DateTime date;
-  const _MembershipDate({required this.label, required this.date});
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
-      const SizedBox(height: 5),
-      Text(
-        '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}',
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    ],
-  );
-}
-
-class GymStatCard extends StatelessWidget {
+class StatCard extends StatelessWidget {
   final IconData icon;
   final String value;
   final String label;
-  const GymStatCard({
+
+  const StatCard({
     super.key,
     required this.icon,
     required this.value,
@@ -548,37 +506,28 @@ class GymStatCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => GymPanel(
+  Widget build(BuildContext context) => AppCard(
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: AppColors.buttonBackColor, size: 26),
-        const SizedBox(height: 12),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
-        ),
+        AppIcon(icon),
+        const SizedBox(height: AppSizes.gapS),
+        AppText.value(value),
+        const SizedBox(height: AppSizes.gapXS),
+        AppText.caption(label),
       ],
     ),
   );
 }
 
-class GymPackageCard extends StatelessWidget {
-  final GymPackage package;
-  const GymPackageCard({super.key, required this.package});
+class PackageCard extends StatelessWidget {
+  final MembershipPackage package;
+
+  const PackageCard({super.key, required this.package});
 
   @override
-  Widget build(BuildContext context) => GymPanel(
-    borderColor: package.highlighted ? AppColors.buttonBackColor : null,
+  Widget build(BuildContext context) => AppCard(
+    borderColor: package.isFeatured ? AppColors.primary : AppColors.border,
+    onTap: () {},
     child: Row(
       children: [
         Expanded(
@@ -587,202 +536,190 @@ class GymPackageCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Flexible(
-                    child: Text(
-                      package.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                  if (package.highlighted) ...[
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.star,
-                      color: AppColors.buttonBackColor,
-                      size: 16,
-                    ),
+                  AppText.title(package.name),
+                  if (package.isFeatured) ...[
+                    const SizedBox(width: AppSizes.gapS),
+                    const AppIcon(Icons.star, size: AppSizes.iconS),
                   ],
                 ],
               ),
-              const SizedBox(height: 5),
-              Text(
-                '${package.duration} · ${package.description}',
-                style: const TextStyle(color: Colors.white60, fontSize: 12),
-              ),
+              const SizedBox(height: AppSizes.gapXS),
+              AppText.caption(package.subtitle),
             ],
           ),
         ),
-        const SizedBox(width: 12),
-        Text(
-          package.price,
-          style: const TextStyle(
-            color: AppColors.buttonBackColor,
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        AppText.price(AppFormat.price(package.price)),
       ],
     ),
   );
 }
 
-class GymTrainerCard extends StatelessWidget {
-  final GymTrainer trainer;
-  const GymTrainerCard({super.key, required this.trainer});
+class TrainerCard extends StatelessWidget {
+  final Trainer trainer;
+
+  const TrainerCard({super.key, required this.trainer});
 
   @override
-  Widget build(BuildContext context) => GymPanel(
+  Widget build(BuildContext context) => AppCard(
+    onTap: () {},
     child: Row(
       children: [
         Container(
-          width: 58,
-          height: 58,
+          width: AppSizes.avatar,
+          height: AppSizes.avatar,
           decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(AppSizes.radiusS),
           ),
-          child: Icon(trainer.icon, color: AppColors.buttonBackColor, size: 32),
+          child: const AppIcon(Icons.person_outline, size: AppSizes.iconL),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSizes.gapM),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                trainer.name,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                trainer.specialty,
-                style: const TextStyle(color: Colors.white70, fontSize: 12),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                trainer.experience,
-                style: const TextStyle(
-                  color: AppColors.buttonBackColor,
-                  fontSize: 11,
-                ),
-              ),
+              AppText.title(trainer.name),
+              const SizedBox(height: AppSizes.gapXS),
+              AppText.caption(trainer.field),
+              const SizedBox(height: AppSizes.gapXS),
+              AppText.accent('${trainer.experienceYears} yıl deneyim'),
             ],
           ),
         ),
-        const Icon(Icons.chevron_right, color: Colors.white38),
+        const AppIcon(Icons.chevron_right, color: AppColors.textSecondary),
       ],
     ),
   );
 }
 
-class GymAmenityChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const GymAmenityChip({super.key, required this.icon, required this.label});
+class AmenityChip extends StatelessWidget {
+  final Amenity amenity;
+
+  const AmenityChip({super.key, required this.amenity});
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSizes.chipPaddingH,
+      vertical: AppSizes.chipPaddingV,
+    ),
     decoration: BoxDecoration(
-      color: const Color(0xFF202020),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.white12),
+      color: AppColors.card,
+      borderRadius: BorderRadius.circular(AppSizes.radiusS),
+      border: Border.all(color: AppColors.border, width: AppSizes.borderWidth),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: AppColors.buttonBackColor, size: 18),
-        const SizedBox(width: 7),
-        Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+        AppIcon(amenity.icon, size: AppSizes.iconS),
+        const SizedBox(width: AppSizes.gapS),
+        AppText.body(amenity.label),
       ],
     ),
   );
 }
 
-class GymAnnouncementCard extends StatelessWidget {
-  final GymAnnouncement announcement;
-  const GymAnnouncementCard({super.key, required this.announcement});
+/* ===================== SAYFA ===================== */
+
+class MyGymPage extends StatelessWidget {
+  const MyGymPage({super.key});
 
   @override
-  Widget build(BuildContext context) => GymPanel(
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(Icons.notifications_none, color: AppColors.buttonBackColor),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      announcement.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+  Widget build(BuildContext context) {
+    const gym = MockData.gym;
+    final membership = MockData.membership;
+    const stats = MockData.stats;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        centerTitle: true,
+        title: const AppText.heading('Salonum'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSizes.pagePadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SectionTitle(icon: Icons.info_outline, title: 'salon bilgileri'),
+            const SizedBox(height: AppSizes.gapM),
+            const GymHeaderCard(gym: gym),
+            const SizedBox(height: AppSizes.gapL),
+            const SectionTitle(
+              icon: Icons.workspace_premium_outlined,
+              title: 'Üyeliğim',
+            ),
+            const SizedBox(height: AppSizes.gapL),
+            MembershipCard(membership: membership),
+            const SizedBox(height: AppSizes.gapL),
+            const SectionTitle(
+              icon: Icons.bar_chart,
+              title: 'Salon istatistikleri',
+            ),
+            const SizedBox(height: AppSizes.gapL),
+            Row(
+              children: [
+                Expanded(
+                  child: StatCard(
+                    icon: Icons.groups_outlined,
+                    value: '${stats.totalMembers}',
+                    label: 'Toplam üye',
                   ),
-                  Text(
-                    announcement.date,
-                    style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
+                const SizedBox(width: AppSizes.gapL),
+                Expanded(
+                  child: StatCard(
+                    icon: Icons.sports_martial_arts,
+                    value: '${stats.trainerCount}',
+                    label: 'Antrenör',
                   ),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSizes.gapL),
+            const SectionTitle(
+              icon: Icons.sell_outlined,
+              title: 'Üyelik paketleri',
+            ),
+            const SizedBox(height: AppSizes.gapL),
+            ...MockData.packages.map(
+              (p) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSizes.gapM),
+                child: PackageCard(package: p),
               ),
-              const SizedBox(height: 6),
-              Text(
-                announcement.description,
-                style: const TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+            const SizedBox(height: AppSizes.gapL),
+
+            const SectionTitle(
+              icon: Icons.badge_outlined,
+              title: 'Antrenörlerimiz',
+            ),
+            const SizedBox(height: AppSizes.gapM),
+            ...MockData.trainers.map(
+              (t) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSizes.gapM),
+                child: TrainerCard(trainer: t),
               ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
+            ),
+            const SizedBox(height: AppSizes.gapS),
 
-class GymContactCard extends StatelessWidget {
-  final GymInfo gym;
-  const GymContactCard({super.key, required this.gym});
-
-  @override
-  Widget build(BuildContext context) => GymPanel(
-    child: Column(
-      children: [
-        _ContactLine(icon: Icons.location_on_outlined, value: gym.location),
-        const SizedBox(height: 14),
-        _ContactLine(icon: Icons.call_outlined, value: gym.phone),
-        const SizedBox(height: 14),
-        _ContactLine(icon: Icons.access_time, value: gym.openingHours),
-      ],
-    ),
-  );
-}
-
-class _ContactLine extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  const _ContactLine({required this.icon, required this.value});
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Icon(icon, color: AppColors.buttonBackColor, size: 20),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Text(
-          value,
-          style: const TextStyle(color: Colors.white70, fontSize: 13),
+            const SectionTitle(
+              icon: Icons.grid_view,
+              title: 'Salon olanakları',
+            ),
+            const SizedBox(height: AppSizes.gapM),
+            Wrap(
+              spacing: AppSizes.gapS,
+              runSpacing: AppSizes.gapS,
+              children: MockData.amenities
+                  .map((a) => AmenityChip(amenity: a))
+                  .toList(),
+            ),
+          ],
         ),
       ),
-    ],
-  );
+    );
+  }
 }
