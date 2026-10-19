@@ -94,10 +94,11 @@ class Mymeasurements extends StatelessWidget {
           backgroundColor: background,
           foregroundColor: Colors.white,
           bottom: TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
+            isScrollable: false,
+            tabAlignment: TabAlignment.fill,
             indicatorColor: yellow,
             labelColor: yellow,
+            labelPadding: EdgeInsets.zero,
             unselectedLabelColor: Colors.white70,
             tabs: kategoriler.values
                 .map((kategori) => Tab(text: kategori))
